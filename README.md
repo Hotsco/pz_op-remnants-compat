@@ -14,9 +14,20 @@ Install both original mods, subscribe to this patch on Steam Workshop, and wait 
 
 Afterward, launch normally through Steam. No save-specific activation is needed. Compatible PZO updates are handled at startup; unsupported game, NPCFW, or target-method changes can block startup. If Steam resets the launcher, run installation again.
 
-## Check or remove
+## Uninstall
 
-Open `%LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\0.2.0-local` and run `Check.cmd` or `Uninstall.cmd`. Close the game before uninstalling. These files remain available after unsubscribing; unsubscribing alone does not remove the installed patch.
+1. Close Project Zomboid.
+2. Press **Windows + R**, paste the folder path below, and press **Enter**.
+
+   ```text
+   %LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\0.2.0-local
+   ```
+
+3. In the folder that opens, double-click **Uninstall.cmd**.
+4. Once the window confirms removal, close it and unsubscribe from this patch on Steam Workshop.
+
+**Unsubscribing alone does not uninstall the patch.**
+To check the installation without removing it, run `Check.cmd` in the same folder.
 
 ## 한국어
 
@@ -28,7 +39,20 @@ NPC/플레이어 접촉 시 충돌 애니메이션 억제와 NPC 조종 중 원�
 
 호환되는 PZO 업데이트에는 시작 시 자동 적용됩니다. 지원하지 않는 변경에서는 게임 시작이 중단될 수 있습니다. Steam이 런처를 초기화하면 설치 명령을 다시 실행하세요.
 
-확인·제거 도구는 `%LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\0.2.0-local`의 `Check.cmd`, `Uninstall.cmd`입니다. 제거 전 게임을 종료하세요. 구독 해제만으로 제거되지는 않습니다.
+### 제거 방법
+
+1. 좀보이드를 완전히 종료하세요.
+2. **Windows 키 + R**을 누르고, 아래 경로를 붙여넣은 뒤 **Enter**를 누르세요.
+
+   ```text
+   %LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\0.2.0-local
+   ```
+
+3. 열린 폴더에서 **Uninstall.cmd**를 더블 클릭하세요.
+4. 제거 완료 메시지가 나오면 창을 닫고, 스팀 워크숍에서 이 패치를 구독 해제하세요.
+
+**구독 해제만으로는 패치가 제거되지 않습니다.**
+설치 상태만 확인하려면 같은 폴더의 `Check.cmd`를 실행하세요.
 
 ## Credits
 
