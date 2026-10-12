@@ -1,82 +1,95 @@
-# PZ_op × Project Remnants — Compatibility Patch
+# PZ_op × Project Remnants — Compatibility Patch 1.0.0
 
-> **Existing users:** Close the game and run the updated installation command below once again. You do not need to uninstall or unsubscribe first. A Workshop update alone does not update an existing installation.
->
-> This update disables PZO's startup cache (AOT) to fix the launch conflict. Other PZO optimizations and the NPC fixes remain enabled.
->
-> **기존 설치자도 게임을 종료한 뒤, 아래 설치 명령을 한 번 다시 실행해 주세요.** 삭제나 구독 해제는 필요 없습니다. 워크숍 자동 업데이트만으로는 기존 설치본에 적용되지 않습니다.
->
-> 게임 실행을 막을 수 있는 PZO의 시작 캐시(AOT)를 자동으로 끕니다. 다른 최적화 기능과 NPC 수정 기능은 유지됩니다.
+**Existing users: wait for the Workshop 1.0.0 download, close the game, and run the new command below once. No uninstall or unsubscribe is needed.** Workshop updates download the package but do not replace the tool already installed on your PC.
 
-Windows / Project Zomboid B42.21. Unofficial compatibility tool for PZ_Optimization and Project Remnants.
+Windows / Project Zomboid B42.21. Restores NPC/player bump-animation suppression and keeps the original player body visible while controlling an NPC. Normal physical collision remains.
 
-Restores NPC/player bump-animation suppression and keeps the original player body visible while controlling an NPC. Normal physical collision remains enabled.
+1.0.0 supports PZO's AOT startup cache and fixes unnecessary cache rebuilding when PZO reorders unchanged settings. It removes the temporary AOT-off restriction added by 0.3.0, while keeping your current PZO preferences. It does not force AOT on or promise faster startup.
 
-## Installation
+## Install / Update
 
-Install both original mods, subscribe to this patch on Steam Workshop, and wait for the download to finish. Close the game, then run the following command in Windows PowerShell once. The script finds Steam libraries, verifies the downloaded package, and installs the compatibility agent.
+1. Finish installing [PZ_Optimization](https://steamcommunity.com/sharedfiles/filedetails/?id=3805285544) and [Project Remnants](https://steamcommunity.com/sharedfiles/filedetails/?id=3738362476).
+2. Subscribe to [this patch](https://steamcommunity.com/sharedfiles/filedetails/?id=3816975899) and wait for its latest download.
+3. Close the game. Press **Windows + R**, type `powershell`, and press **Enter**. Paste this entire command and press **Enter**:
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Hotsco/pz_op-remnants-compat/eebecd7d005a33c08acd556b7821bfe9529b9009/install.ps1')))
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Hotsco/pz_op-remnants-compat/924622fe35bdafd71cd1c5714625edfcac04ce37/install.ps1')))
 ```
 
-Afterward, launch normally through Steam. No save-specific activation is needed. Compatible PZO updates are handled at startup; unsupported game, NPCFW, or target-method changes can block startup. If Steam resets the launcher, run installation again.
+After setup, launch normally through Steam. This step makes the patch start with the game; it is not needed every launch. No save-specific activation is needed. Repeat installation when a patch update asks you to, or if Steam resets the launcher.
 
-## Uninstall
+When AOT is enabled, allow startup to finish and quit normally during the first launches while PZO prepares the cache. Compatible PZO updates are handled at startup. Unsupported game, NPCFW, target-method, or AOT implementation changes may block startup; future compatibility is not guaranteed.
 
-1. Close Project Zomboid.
-2. Press **Windows + R**, paste the folder path below, and press **Enter**.
+## Uninstall / Check
 
-   ```text
-   %LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\0.2.0-local
-   ```
+Close the game. Press **Windows + R**, paste this folder path, and press **Enter**:
 
-3. In the folder that opens, double-click **Uninstall.cmd**.
-4. Once the window confirms removal, close it and unsubscribe from this patch on Steam Workshop.
+```text
+%LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\1.0.0
+```
 
-**Unsubscribing alone does not uninstall the patch.**
-To check the installation without removing it, run `Check.cmd` in the same folder.
+Double-click **Uninstall.cmd**. After removal is confirmed, unsubscribe from the patch. **Unsubscribing alone does not remove its startup setting.** Run **Check.cmd** in the same folder to check installation without removing it.
+
+If you prefer to install from a file, `Install.cmd` is here:
+
+```text
+<Steam library>\steamapps\workshop\content\108600\3816975899\mods\PZ_op_Remnants_Compat\42\Install.cmd
+```
 
 ## 한국어
 
-Windows / 좀보이드 B42.21용 PZ_Optimization + Project Remnants 비공식 호환 도구입니다.
+**기존 설치자도 워크숍 1.0.0 다운로드가 끝나면 게임을 종료하고, 아래 새 명령을 한 번 실행해 주세요. 먼저 삭제하거나 구독을 해제할 필요는 없습니다.** 워크숍 업데이트만으로는 PC에 따로 설치된 도구가 교체되지 않습니다.
 
-NPC/플레이어 접촉 시 충돌 애니메이션 억제와 NPC 조종 중 원래 플레이어 몸이 사라지는 문제를 수정합니다. 일반 물리 충돌은 유지됩니다.
+Windows / 좀보이드 B42.21용 비공식 호환 패치입니다. NPC/플레이어 접촉 시 충돌 애니메이션 억제와 NPC 조종 중 원래 플레이어 몸이 사라지는 문제를 수정합니다. 일반 물리 충돌은 유지됩니다.
 
-### 설치 방법
+1.0.0은 PZO의 시작 캐시(AOT)를 함께 사용할 수 있도록 수정하고, 설정 순서가 바뀌면 캐시를 반복 준비하던 문제를 해결했습니다. 0.3.0의 임시 AOT 차단은 해제하며 현재 PZO 옵션은 유지합니다. AOT를 강제로 켜거나 시작 속도 향상을 보장하지 않습니다.
 
-1. **PZ_Optimization과 Project Remnants의 설치를 먼저 마치고**, 이 패치를 스팀 워크숍에서 구독해 다운로드를 기다리세요.
-2. 좀보이드를 종료한 뒤, **Windows 키 + R**을 누르고 `powershell`을 입력해 **Enter**를 누르세요.
-3. 열린 PowerShell 창에 아래 명령 전체를 붙여넣고 **Enter**를 누르세요. 게임과 구독 폴더를 자동으로 찾아 설치합니다.
+### 설치 / 업데이트
 
-   ```powershell
-   & ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Hotsco/pz_op-remnants-compat/eebecd7d005a33c08acd556b7821bfe9529b9009/install.ps1')))
-   ```
+1. PZ_Optimization과 Project Remnants의 설치를 먼저 마치세요.
+2. [이 패치](https://steamcommunity.com/sharedfiles/filedetails/?id=3816975899)를 구독하고 최신 파일 다운로드를 기다리세요.
+3. 게임을 종료한 뒤 **Windows 키 + R**을 누르고 `powershell`을 입력해 **Enter**를 누르세요. 아래 명령 전체를 붙여넣고 **Enter**를 누르세요.
 
-4. 설치 완료 메시지가 나오면 창을 닫고, 스팀에서 평소처럼 게임을 실행하세요.
+```powershell
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Hotsco/pz_op-remnants-compat/924622fe35bdafd71cd1c5714625edfcac04ce37/install.ps1')))
+```
 
-게임을 켤 때마다 설치 명령을 실행할 필요는 없습니다. 세이브의 모드 목록에서 이 패치를 활성화할 필요는 없습니다.
+설치 완료 메시지가 나오면 창을 닫고 스팀에서 평소처럼 실행하세요. 게임 시작과 함께 패치가 작동하도록 연결하는 단계라 매번 실행할 필요는 없습니다. 세이브의 모드 목록에 추가할 필요도 없습니다. 패치 공지에서 요청하거나 스팀이 실행 설정을 초기화했을 때만 다시 설치하면 됩니다.
 
-호환되는 PZO 업데이트에는 시작 시 자동 적용됩니다. 지원하지 않는 변경에서는 게임 시작이 중단될 수 있습니다. Steam이 런처를 초기화하면 설치 명령을 다시 실행하세요.
+AOT를 켠 경우 처음 몇 번은 시작을 끝까지 기다린 뒤 정상 종료해 주세요. 캐시 준비에 필요합니다. 호환되는 PZO 업데이트는 시작 시 자동 처리하지만, 지원하지 않는 게임·NPCFW·수정 대상 코드·AOT 변경은 게임 시작을 막을 수 있습니다. 이후 모든 업데이트의 호환성을 보장하지는 않습니다.
 
-### 제거 방법
+### 제거 / 확인
 
-1. 좀보이드를 완전히 종료하세요.
-2. **Windows 키 + R**을 누르고, 아래 경로를 붙여넣은 뒤 **Enter**를 누르세요.
+게임을 종료하고 **Windows 키 + R**을 눌러 아래 경로를 붙여넣은 뒤 **Enter**를 누르세요.
 
-   ```text
-   %LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\0.2.0-local
-   ```
+```text
+%LOCALAPPDATA%\PZO-NPCFW-Compat\runtime\1.0.0
+```
 
-3. 열린 폴더에서 **Uninstall.cmd**를 더블 클릭하세요.
-4. 제거 완료 메시지가 나오면 창을 닫고, 스팀 워크숍에서 이 패치를 구독 해제하세요.
+열린 폴더에서 **Uninstall.cmd**를 더블 클릭하세요. 제거 완료 메시지가 나오면 이 패치를 구독 해제하세요. **구독 해제만으로는 실행 설정이 제거되지 않습니다.** 설치 상태만 확인하려면 같은 폴더의 **Check.cmd**를 실행하세요.
 
-**구독 해제만으로는 패치가 제거되지 않습니다.**
-설치 상태만 확인하려면 같은 폴더의 `Check.cmd`를 실행하세요.
+파일을 직접 찾아 설치할 경우 `Install.cmd`의 위치:
+
+```text
+<스팀 라이브러리>\steamapps\workshop\content\108600\3816975899\mods\PZ_op_Remnants_Compat\42\Install.cmd
+```
+
+## Technical scope
+
+The agent transforms classes in memory before NPCFW. It supports verified loose PZO classes and PZO's packed AOT source. For NPCFW retransformation, AOT class linking is disabled with `-XX:-AOTClassLinking`; this is not PZO's full linked-AOT mode. Cache mapping and reuse were verified, but no startup-speed benchmark is claimed.
+
+The installer removes the old forced-off argument only when the previous installation record identifies it as patch-owned. It does not edit `options.ini`. Cache preparation restarts when upgrading the engine; repeated installation of the same 1.0.0 build preserves the current cache setup.
+
+Supported baseline: B42.21, game revision `4a0e9546ec`, reviewed NPCFW hash and PZO AotCache implementation. PZO `0f29f52e` passed the release tests. Validation is limited to the tested code paths and does not imply all future builds or gameplay combinations are supported.
 
 ## Credits
 
 - [PZ_Optimization — xD3I](https://steamcommunity.com/sharedfiles/filedetails/?id=3805285544)
 - [Project Remnants — Datpat, Klosop1](https://steamcommunity.com/sharedfiles/filedetails/?id=3738362476)
 
-An unofficial community compatibility tool. No game or original mod binaries are included in this repository. ASM notices are included with the Workshop payload.
+Thank you, J, for helping make this patch available!
+해당 패치 배포를 위해 기여해주신 J 감사합니다!
+
+Workshop ID: `3816975899` / Mod ID: `PZ_op_Remnants_Compat`
+
+Unofficial community tool. No game or original mod binaries are distributed here. ASM notices are included with the Workshop package.
