@@ -4,7 +4,7 @@
 
 Windows / Project Zomboid B42.21. Restores NPC/player bump-animation suppression and keeps the original player body visible while controlling an NPC. Normal physical collision remains.
 
-1.0.0 supports PZO's AOT startup cache and fixes unnecessary cache rebuilding when PZO reorders unchanged settings. It removes the temporary AOT-off restriction added by 0.3.0, while keeping your current PZO preferences. It does not force AOT on or promise faster startup.
+1.0.0 supports PZO's AOT startup cache. It removes the temporary AOT-off restriction added by 0.3.0, while keeping your current PZO preferences. It does not force AOT on.
 
 ## Install / Update
 
@@ -42,7 +42,7 @@ If you prefer to install from a file, `Install.cmd` is here:
 
 Windows / 좀보이드 B42.21용 비공식 호환 패치입니다. NPC/플레이어 접촉 시 충돌 애니메이션 억제와 NPC 조종 중 원래 플레이어 몸이 사라지는 문제를 수정합니다. 일반 물리 충돌은 유지됩니다.
 
-1.0.0은 PZO의 시작 캐시(AOT)를 함께 사용할 수 있도록 수정하고, 설정 순서가 바뀌면 캐시를 반복 준비하던 문제를 해결했습니다. 0.3.0의 임시 AOT 차단은 해제하며 현재 PZO 옵션은 유지합니다. AOT를 강제로 켜거나 시작 속도 향상을 보장하지 않습니다.
+1.0.0부터 PZO의 시작 캐시(AOT)를 함께 사용할 수 있습니다. 0.3.0의 임시 AOT 차단은 해제하며 현재 PZO 옵션은 유지합니다. AOT를 강제로 켜지는 않습니다.
 
 ### 설치 / 업데이트
 
@@ -73,14 +73,6 @@ AOT를 켠 경우 처음 몇 번은 시작을 끝까지 기다린 뒤 정상 종
 ```text
 <스팀 라이브러리>\steamapps\workshop\content\108600\3816975899\mods\PZ_op_Remnants_Compat\42\Install.cmd
 ```
-
-## Technical scope
-
-The agent transforms classes in memory before NPCFW. It supports verified loose PZO classes and PZO's packed AOT source. For NPCFW retransformation, AOT class linking is disabled with `-XX:-AOTClassLinking`; this is not PZO's full linked-AOT mode. Cache mapping and reuse were verified, but no startup-speed benchmark is claimed.
-
-The installer removes the old forced-off argument only when the previous installation record identifies it as patch-owned. It does not edit `options.ini`. Cache preparation restarts when upgrading the engine; repeated installation of the same 1.0.0 build preserves the current cache setup.
-
-Supported baseline: B42.21, game revision `4a0e9546ec`, reviewed NPCFW hash and PZO AotCache implementation. PZO `0f29f52e` passed the release tests. Validation is limited to the tested code paths and does not imply all future builds or gameplay combinations are supported.
 
 ## Credits
 
