@@ -10,16 +10,16 @@ function Get-PZOpSteamRoots {
   if($reg -and $reg.SteamPath){$roots+=$reg.SteamPath}
   if($reg -and $reg.InstallPath){$roots+=$reg.InstallPath}
  }
- if(${env:ProgramFiles(x86)}){$roots+=Join-Path ${env:ProgramFiles(x86)} 'Steam'}
+ if(${env:ProgramFiles(x86)}){$roots+=[IO.Path]::Combine(${env:ProgramFiles(x86)},'Steam')}
  return @($roots|Sort-Object -Unique)
 }
 function Get-PZOpSteamLibraries {
  param([string[]]$SteamRoots=(Get-PZOpSteamRoots))
  $libraries=@($SteamRoots)
  foreach($root in $SteamRoots) {
-  if(-not $root){continue}
-  $vdf=Join-Path $root 'steamapps\libraryfolders.vdf'
-  if(Test-Path -LiteralPath $vdf -PathType Leaf) {
+  if(-not $root -or -not [IO.Path]::IsPathRooted($root) -or -not [IO.Directory]::Exists($root)){continue}
+  $vdf=[IO.Path]::Combine($root,'steamapps\libraryfolders.vdf')
+  if([IO.File]::Exists($vdf)) {
    foreach($match in [regex]::Matches([IO.File]::ReadAllText($vdf),'"path"\s+"([^"]+)"')) {
     $libraries+=$match.Groups[1].Value.Replace('\\','\')
    }
@@ -27,14 +27,19 @@ function Get-PZOpSteamLibraries {
  }
  $found=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
  foreach($root in $libraries) {
-  if($root -and [IO.Path]::IsPathRooted($root)){[void]$found.Add([IO.Path]::GetFullPath($root).TrimEnd('\'))}
+  if(-not $root -or -not [IO.Path]::IsPathRooted($root)){continue}
+  try {$full=[IO.Path]::GetFullPath($root)}catch{continue}
+  # Steam can retain disconnected/deleted libraries. Never resolve those through a PowerShell drive.
+  if(-not [IO.Directory]::Exists($full)){continue}
+  if($full-ne [IO.Path]::GetPathRoot($full)){$full=$full.TrimEnd('\','/')}
+  [void]$found.Add($full)
  }
  return @($found|Sort-Object)
 }
 function Test-PZOpGameFolder([string]$Path) {
- if(-not $Path){return $false}
- return (Test-Path -LiteralPath (Join-Path $Path 'projectzomboid.jar') -PathType Leaf) -and
-        (Test-Path -LiteralPath (Join-Path $Path 'ProjectZomboid64.json') -PathType Leaf)
+ if(-not $Path -or -not [IO.Directory]::Exists($Path)){return $false}
+ return [IO.File]::Exists([IO.Path]::Combine($Path,'projectzomboid.jar')) -and
+        [IO.File]::Exists([IO.Path]::Combine($Path,'ProjectZomboid64.json'))
 }
 function Get-PZOpGameCandidates {
  param([string]$StartDir,[string[]]$SteamRoots=(Get-PZOpSteamRoots))
@@ -42,7 +47,7 @@ function Get-PZOpGameCandidates {
  $parent=[IO.DirectoryInfo]::new([IO.Path]::GetFullPath($StartDir))
  while($null-ne $parent) {
   if($parent.Name-eq 'steamapps') {
-   $game=Join-Path $parent.FullName 'common\ProjectZomboid'
+   $game=[IO.Path]::Combine($parent.FullName,'common\ProjectZomboid')
    if(Test-PZOpGameFolder $game){return [IO.Path]::GetFullPath($game)}
    break
   }
@@ -50,7 +55,7 @@ function Get-PZOpGameCandidates {
  }
  $games=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
  foreach($root in @(Get-PZOpSteamLibraries -SteamRoots $SteamRoots)) {
-  $game=Join-Path $root 'steamapps\common\ProjectZomboid'
+  $game=[IO.Path]::Combine($root,'steamapps\common\ProjectZomboid')
   if(Test-PZOpGameFolder $game){[void]$games.Add([IO.Path]::GetFullPath($game))}
  }
  return @($games|Sort-Object)
@@ -68,23 +73,24 @@ function Find-PZOpGame {
  }
  throw 'Specify -GameDir with the folder containing projectzomboid.jar and ProjectZomboid64.json.'
 }
+
 $ExpectedManifestHash='C33132038A08F8667818A49A16D8C279D1DBF2B23F9AB1CD04F58BB1DC3BE469'
 function Test-PZOpPayload([string]$root) {
- $manifest=Join-Path $root 'SHA256SUMS.txt'
- if(!(Test-Path -LiteralPath $manifest) -or (Get-FileHash -LiteralPath $manifest).Hash-ne $ExpectedManifestHash){return $false}
+ $manifest=[IO.Path]::Combine($root,'SHA256SUMS.txt')
+ if(![IO.File]::Exists($manifest) -or (Get-FileHash -LiteralPath $manifest).Hash-ne $ExpectedManifestHash){return $false}
  foreach($line in [IO.File]::ReadAllLines($manifest)) {
   if($line -notmatch '^([0-9a-f]{64})  (.+)$'){return $false}
   $hash=$Matches[1];$name=$Matches[2]
   if($name.Contains('..') -or $name.Contains(':') -or [IO.Path]::IsPathRooted($name)){return $false}
-  $path=Join-Path $root $name
-  if(!(Test-Path -LiteralPath $path) -or (Get-FileHash -LiteralPath $path).Hash.ToLowerInvariant()-ne $hash){return $false}
+  $path=[IO.Path]::Combine($root,$name)
+  if(![IO.File]::Exists($path) -or (Get-FileHash -LiteralPath $path).Hash.ToLowerInvariant()-ne $hash){return $false}
  }
  return $true
 }
 try {
  if(!$SteamRoot){$SteamRoot=@(Get-PZOpSteamRoots)}
  $libraries=@(Get-PZOpSteamLibraries -SteamRoots $SteamRoot)
- $found=@($libraries|ForEach-Object {Join-Path $_ 'steamapps\workshop\content\108600\3816975899\mods\PZ_op_Remnants_Compat\42'}|Where-Object {Test-Path -LiteralPath $_ -PathType Container})
+ $found=@($libraries|ForEach-Object {[IO.Path]::Combine($_,'steamapps\workshop\content\108600\3816975899\mods\PZ_op_Remnants_Compat\42')}|Where-Object {[IO.Directory]::Exists($_)})
  $valid=@($found|Where-Object {Test-PZOpPayload $_})
  if(!$valid.Count){throw 'Version 1.1.0 patch files not found or do not match. Subscribe to Workshop item 3816975899 and wait for Steam to finish its latest download, then try again.'}
  $payload=$valid[0]
