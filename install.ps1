@@ -1,4 +1,4 @@
-# PZ_op x Project Remnants 1.0.1: use the verified subscribed Workshop package.
+# PZ_op x Project Remnants 1.1.0: use the verified subscribed Workshop package.
 [CmdletBinding()]
 param([string[]]$SteamRoot,[string]$GameDir,[string]$RuntimeDir,[switch]$LocateOnly)
 $ErrorActionPreference='Stop'
@@ -68,7 +68,7 @@ function Find-PZOpGame {
  }
  throw 'Specify -GameDir with the folder containing projectzomboid.jar and ProjectZomboid64.json.'
 }
-$ExpectedManifestHash='DE006B203D4F53A2668172571DABE5E57CBDDB32BD88D2C4C2D134515A0D1D52'
+$ExpectedManifestHash='C33132038A08F8667818A49A16D8C279D1DBF2B23F9AB1CD04F58BB1DC3BE469'
 function Test-PZOpPayload([string]$root) {
  $manifest=Join-Path $root 'SHA256SUMS.txt'
  if(!(Test-Path -LiteralPath $manifest) -or (Get-FileHash -LiteralPath $manifest).Hash-ne $ExpectedManifestHash){return $false}
@@ -86,7 +86,7 @@ try {
  $libraries=@(Get-PZOpSteamLibraries -SteamRoots $SteamRoot)
  $found=@($libraries|ForEach-Object {Join-Path $_ 'steamapps\workshop\content\108600\3816975899\mods\PZ_op_Remnants_Compat\42'}|Where-Object {Test-Path -LiteralPath $_ -PathType Container})
  $valid=@($found|Where-Object {Test-PZOpPayload $_})
- if(!$valid.Count){throw 'Version 1.0.1 patch files not found or do not match. Subscribe to Workshop item 3816975899 and wait for Steam to finish its latest download, then try again.'}
+ if(!$valid.Count){throw 'Version 1.1.0 patch files not found or do not match. Subscribe to Workshop item 3816975899 and wait for Steam to finish its latest download, then try again.'}
  $payload=$valid[0]
  if(!$GameDir){
   $games=@(Get-PZOpGameCandidates -StartDir $payload -SteamRoots $SteamRoot)
@@ -96,7 +96,7 @@ try {
  if(!(Test-PZOpGameFolder $GameDir)){throw 'The selected folder does not contain Project Zomboid.'}
  Write-Host "Workshop package: $payload"
  Write-Host "Game folder: $GameDir"
- if($LocateOnly){Write-Output 'LOCATE OK: 1.0.1 files verified; no installation performed.';return}
+ if($LocateOnly){Write-Output 'LOCATE OK: 1.1.0 files verified; no installation performed.';return}
  $arguments=@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $payload 'runtime.ps1'),'-Action','Install','-GameDir',$GameDir)
  if($RuntimeDir){$arguments+=@('-RuntimeDir',$RuntimeDir)}
  & (Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe') @arguments
